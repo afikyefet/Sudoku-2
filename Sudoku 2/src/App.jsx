@@ -1,11 +1,12 @@
-import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Board } from './pages/Board'
+import { store } from './store/store'
+import { Provider } from 'react-redux'
 
 function App() {
 
   return (
     <>
-      <Router>
         <Provider store={store}>
           <BrowserRouter>
             <Routes>
@@ -13,7 +14,6 @@ function App() {
             </Routes>
           </BrowserRouter>
         </Provider>
-      </Router>
 
     </>
   )

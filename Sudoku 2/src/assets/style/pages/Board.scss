@@ -1,0 +1,9 @@
+.board-container {
+    display: grid;
+    grid-template-columns: repeat(9, auto);
+    grid-template-rows: repeat(9, auto);
+    gap: 4px;
+    place-content: center;
+
+    height: 100vh;
+}
