@@ -1,0 +1,22 @@
+@use '../setup/vars';
+
+.cell-container {
+    background-color: grey;
+    width: 32px;
+    height: 32px;
+    // padding: 1px;
+    border-radius: 2px;
+
+    &.bottom-gap {
+        margin-bottom: 3px;
+        // background-color: red;
+    }
+
+    &.right-gap {
+        margin-right: 3px;
+        // background-color: red;
+    }
+
+
+    place-self: center;
+}

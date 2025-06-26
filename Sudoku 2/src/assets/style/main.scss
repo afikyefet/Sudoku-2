@@ -1,16 +1,19 @@
+@use './setup/vars';
+@use './setup/mixings';
+@use './setup/typography';
+
+
+@use './base/base';
+@use './base/forms';
+@use './base/layouts';
+
+
 // @use './cmps/AppHeader.scss';
+@use './cmps/Cell.scss';
 // @use './cmps/AppFooter.scss';
 // @use './cmps/DynamicModal.scss';
 // @use './cmps/UserMsg.scss';
 
 
 // @use './pages/Home.scss';
-
-// @use './setup/vars';
-// @use './setup/mixings';
-// @use './setup/typography';
-
-
-// @use './base/base';
-// @use './base/forms';
-// @use './base/layouts';
+@use './pages/Board.scss';
