@@ -1,11 +1,14 @@
-export function Cell(row, col) {
-
-    console.log(row);
-
+export function Cell({ row, col, isSelected, isFixed, onClick }) {
 
     return (
-        <div className={`cell-container ${row.row == 2 || row.row == 5 ? 'bottom-gap' : ''} ${row.col == 2 || row.col == 5 ? 'right-gap' : ''}`}>
-
+        <div
+            className={`cell-container ${row == 2 || row == 5 ? 'bottom-gap' : ''} ${col == 2 || col == 5 ? 'right-gap' : ''} ${isSelected ? 'selected' : ''} ${isFixed ? 'fixed' : ''}`}
+            onClick={() => !isFixed && onClick(row, col)}
+            style={{
+                backgroundColor: isSelected ? '#d1e7dd' : isFixed ? '#f8d7da' : '#999999',
+                cursor: isFixed ? 'default' : 'pointer'
+            }}
+        >
         </div>
     )
 }

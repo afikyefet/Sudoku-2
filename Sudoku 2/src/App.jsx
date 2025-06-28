@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppHeader } from './cmps/AppHeader'
-import { Home } from './pages/Home'
+import { Board } from './pages/Board'
 import { store } from './store/store'
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
         <AppHeader />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Board />} />
           </Routes>
         </BrowserRouter>
       </Provider>
