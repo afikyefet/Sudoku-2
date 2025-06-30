@@ -8,12 +8,8 @@ export function Board() {
     const isLoading = useSelector((store) => store.boardModule.isLoading);
     const selectedCell = useSelector((store) => store.boardModule.selectedCell);
 
-    const emptyBoard = Array.from({ length: 9 }, () =>
-        Array.from({ length: 9 }, () => ({ value: 0, isFixed: false }))
-    );
-
     function onCellClick(row, col) {
-        if (currentBoard[row][col].isFixed) return;
+        if (currentBoard.cells[row][col].isFixed) return;
         setSelectedCell(row, col);
     }
 
@@ -22,9 +18,9 @@ export function Board() {
     }
 
     const renderBoard = () => {
-        return currentBoard.map((row, rowIndex) => (
+        return currentBoard.cells.map((row, rowIndex) => (
             row.map((cell, colIndex) => (
-                <Cell key={`${rowIndex}-${colIndex}`} row={rowIndex} col={colIndex} isFixed={cell.isFixed} isSelected={isSelected(rowIndex, colIndex)} onClick={() => onCellClick(rowIndex, colIndex)} />
+                <Cell key={`${rowIndex}-${colIndex}`} row={rowIndex} col={colIndex} value={cell.value} isFixed={cell.isFixed} isSelected={isSelected(rowIndex, colIndex)} onClick={() => onCellClick(rowIndex, colIndex)} />
             ))
         ))
     }
@@ -45,10 +41,17 @@ export function Board() {
         );
     }
     return (
-        <section className="board-container">
-            {
-                renderBoard()
-            }
+        <section className="board-header">
+            <h1>{currentBoard.title}</h1>
+            <p>{currentBoard.description}</p>
+            <p>Created by: {currentBoard.createdBy}</p>
+            <p>Created at: {new Date(currentBoard.createdAt).toLocaleString()}</p>
+            <p>Updated at: {new Date(currentBoard.updatedAt).toLocaleString()}</p>
+            <section className="board-container">
+                {
+                    renderBoard()
+                }
+            </section>
         </section>
     )
 }

@@ -5,9 +5,20 @@ export const boardService = {
 };
 
 function getEmptyBoard() {
-    return Array.from({ length: 9 }, () =>
-        Array.from({ length: 9 }, () => ({ value: 0, isFixed: false }))
-    );
+    let emptyBoard = {
+        id: 'empty-board',
+        title: 'New Sudoku Board',
+        description: 'This is a new empty Sudoku board.',
+        createdBy: 'System',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        isSolved: false,
+        isLoading: false,
+        cells: [],
+    }
+    emptyBoard.cells = Array.from({ length: 9 }, () =>
+        Array.from({ length: 9 }, () => ({ value: 0, isFixed: false })))
+    return emptyBoard
 }
 function getBoard() {
     const board = JSON.parse(localStorage.getItem('board'));
@@ -56,34 +67,34 @@ export function getEmptyBox() {
 export function getEmptyBoardWithFixedCells() {
     const board = getEmptyBoard();
     // Set some cells as fixed for testing
-    board[0][0].value = 5;
-    board[0][0].isFixed = true;
-    board[1][1].value = 3;
-    board[1][1].isFixed = true;
-    board[2][2].value = 4;
-    board[2][2].isFixed = true;
+    board.cells[0][0].value = 5;
+    board.cells[0][0].isFixed = true;
+    board.cells[1][1].value = 3;
+    board.cells[1][1].isFixed = true;
+    board.cells[2][2].value = 4;
+    board.cells[2][2].isFixed = true;
     return board;
 }
 export function getEmptyBoardWithValues() {
     const board = getEmptyBoard();
     // Set some cells with values for testing
-    board[0][0].value = 5;
-    board[0][1].value = 3;
-    board[0][2].value = 4;
-    board[1][0].value = 6;
-    board[1][1].value = 7;
-    board[1][2].value = 8;
+    board.cells[0][0].value = 5;
+    board.cells[0][1].value = 3;
+    board.cells[0][2].value = 4;
+    board.cells[1][0].value = 6;
+    board.cells[1][1].value = 7;
+    board.cells[1][2].value = 8;
     return board;
 }
 export function getEmptyBoardWithValuesAndFixedCells() {
     const board = getEmptyBoard();
     // Set some cells with values and fixed for testing
-    board[0][0].value = 5;
-    board[0][0].isFixed = true;
-    board[0][1].value = 3;
-    board[0][2].value = 4;
-    board[1][0].value = 6;
-    board[1][1].value = 7;
-    board[1][2].value = 8;
+    board.cells[0][0].value = 5;
+    board.cells[0][0].isFixed = true;
+    board.cells[0][4].value = 3;
+    board.cells[0][2].value = 4;
+    board.cells[1][0].value = 6;
+    board.cells[1][1].value = 7;
+    board.cells[1][2].value = 8;
     return board;
 }

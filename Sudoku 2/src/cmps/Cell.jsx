@@ -1,4 +1,4 @@
-export function Cell({ row, col, isSelected, isFixed, onClick }) {
+export function Cell({ row, col, isSelected, value, isFixed, onClick }) {
 
     return (
         <div
@@ -9,6 +9,9 @@ export function Cell({ row, col, isSelected, isFixed, onClick }) {
                 cursor: isFixed ? 'default' : 'pointer'
             }}
         >
+            <span className="cell-value">
+                {value ? <strong>{value}</strong> : ''}
+            </span>
         </div>
     )
 }
