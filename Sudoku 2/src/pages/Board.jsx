@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ActionBar } from "../cmps/ActionBar";
 import { Cell } from "../cmps/Cell";
-import { setSelectedCell } from "../store/actions/board.action";
+import { loadBoard, setCell, setSelectedCell } from "../store/actions/board.action";
 
 export function Board() {
 
@@ -10,31 +10,16 @@ export function Board() {
     const isLoading = useSelector((store) => store.boardModule.isLoading);
     const selectedCell = useSelector((store) => store.boardModule.selectedCell);
 
-    const excludedRef = useRef([]);
 
-    const addExcludedRef = (el) => {
-        if (el && !excludedRef.current.includes(el)) {
-            excludedRef.current.push(el);
+    useEffect(() => {
+        console.log('Board component mounted');
+
+        loadBoard();
+        if (!currentBoard || currentBoard.length === 0) {
+            console.log('No board found, fetching board...');
         }
-    };
+    }, []);
 
-
-    // useEffect(() => {
-    //     function handleClickOutside() {
-    //         const clickedInside = excludedRef.current.some((el) =>
-    //             el.contains(event.target)
-    //         );
-    //         if (!clickedInside) {
-    //             console.log('Clicked outside all protected elements!');
-    //             resetSelectedCell();
-    //         }
-    //     }
-
-    //     document.addEventListener('mousedown', handleClickOutside);
-    //     return () => {
-    //         document.removeEventListener('mousedown', handleClickOutside);
-    //     };
-    // }, []);
 
     function onCellClick(row, col) {
         if (currentBoard.cells[row][col].isFixed) return;
@@ -45,10 +30,46 @@ export function Board() {
         return selectedCell && selectedCell.row === row && selectedCell.col === col;
     }
 
+    const onSetValue = (value) => {
+        console.log('setting value', value);
+        console.log('selectedCell', selectedCell);
+        console.log('currentBoard', currentBoard);
+
+        if (value == null) {
+            setCell(null);
+            return;
+        }
+
+        if (!selectedCell || selectedCell == null) return;
+
+        const { row, col } = selectedCell;
+
+        if (currentBoard.cells[row][col].isFixed) return;
+
+
+        console.log('setting cell', row, col, value);
+        setCell(row, col, value);
+    }
+
+    function toggleFixed() {
+        if (!selectedCell || selectedCell == null) return;
+
+        const { row, col } = selectedCell;
+
+        if (currentBoard.cells[row][col].isFixed) {
+            setCell(row, col, currentBoard.cells[row][col].value, false);
+        } else {
+            setCell(row, col, currentBoard.cells[row][col].value, true);
+        }
+    }
+
     const renderBoard = () => {
+        if (!currentBoard || !currentBoard.cells || currentBoard.cells.length === 0) {
+            return <div className="loading">Loading...</div>;
+        }
         return currentBoard.cells.map((row, rowIndex) => (
             row.map((cell, colIndex) => (
-                <Cell ref={addExcludedRef} key={`${rowIndex}-${colIndex}`} row={rowIndex} col={colIndex} isFixed={cell.isFixed} isSelected={isSelected(rowIndex, colIndex)} onClick={() => onCellClick(rowIndex, colIndex)} />
+                <Cell key={`${rowIndex}-${colIndex}`} row={rowIndex} col={colIndex} value={currentBoard.cells[rowIndex][colIndex].value} isFixed={cell.isFixed} isSelected={isSelected(rowIndex, colIndex)} onClick={() => onCellClick(rowIndex, colIndex)} />
             ))
         ))
     }
@@ -75,12 +96,13 @@ export function Board() {
             <p>Created by: {currentBoard.createdBy}</p>
             <p>Created at: {new Date(currentBoard.createdAt).toLocaleString()}</p>
             <p>Updated at: {new Date(currentBoard.updatedAt).toLocaleString()}</p>
+            <p>id: {currentBoard._id}</p>
             <section className="board-container">
                 {
                     renderBoard()
                 }
             </section>
-            {selectedCell && <ActionBar selectedCell={selectedCell} />}
+            {selectedCell && <ActionBar onSetValue={onSetValue} selectedCell={selectedCell} toggleFixed={toggleFixed} />}
         </section>
     )
 }

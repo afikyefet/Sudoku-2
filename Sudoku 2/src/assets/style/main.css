@@ -124,6 +124,10 @@ footer {
 }
 
 .action-bar {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   height: 40px;
   display: flex;
   background-color: red;
@@ -143,6 +147,8 @@ footer {
   grid-template-rows: repeat(9, auto);
   gap: 4px;
   place-content: center;
+  padding-top: 24px;
+  padding-bottom: 74px;
 }
 
 /*# sourceMappingURL=main.css.map */

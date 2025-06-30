@@ -1,6 +1,10 @@
 @use '../setup/vars';
 
 .action-bar {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
     height: 40px;
     // width: 100%;
     // width: 100px;

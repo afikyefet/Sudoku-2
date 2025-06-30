@@ -1,8 +1,10 @@
-export function Cell({ row, col, addExcludedRef, value, isSelected, isFixed, onClick }) {
+export function Cell({ row, col, value, isSelected, isFixed, onClick }) {
+
+    console.log('Cell rendered:', row, col, value, isSelected, isFixed);
+
 
     return (
         <div
-            ref={addExcludedRef}
             className={`cell-container ${row == 2 || row == 5 ? 'bottom-gap' : ''} ${col == 2 || col == 5 ? 'right-gap' : ''} ${isSelected ? 'selected' : ''} ${isFixed ? 'fixed' : ''}`}
             onClick={() => !isFixed && onClick(row, col)}
             style={{
@@ -11,7 +13,7 @@ export function Cell({ row, col, addExcludedRef, value, isSelected, isFixed, onC
             }}
         >
             <span className="cell-value">
-                {value ? <strong>{value}</strong> : ''}
+                {!(value == 0) && value !== null && value !== undefined ? value : ''}
             </span>
         </div>
     )

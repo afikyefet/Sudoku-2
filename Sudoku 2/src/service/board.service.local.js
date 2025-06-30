@@ -1,12 +1,31 @@
+import { storageService } from "./async-storage.service";
+import { utilService } from "./util.service";
+
 export const boardService = {
-    getEmptyBoard, getBoard, setBoard, getCell, setCell, getRow, getCol, getBox,
-    getEmptyCell, getEmptyRow, getEmptyCol, getEmptyBox, getEmptyBoardWithFixedCells,
-    getEmptyBoardWithValues, getEmptyBoardWithValuesAndFixedCells
+    getBoard,
+    setBoard,
+    getEmptyBoard,
+    setCell,
+    getRow,
+    getCol,
+    getBox,
+    getEmptyCell,
+    getEmptyRow,
+    getEmptyCol,
+    getEmptyBox,
+    getEmptyBoardWithFixedCells,
+    getEmptyBoardWithValues,
+    getEmptyBoardWithValuesAndFixedCells
 };
 
+const boardDB = 'board';
+
+
 function getEmptyBoard() {
+    console.log("emptyyyyyyyyyyyy");
+
     let emptyBoard = {
-        id: 'empty-board',
+        _id: utilService.makeId(),
         title: 'New Sudoku Board',
         description: 'This is a new empty Sudoku board.',
         createdBy: 'System',
@@ -17,29 +36,70 @@ function getEmptyBoard() {
         cells: [],
     }
     emptyBoard.cells = Array.from({ length: 9 }, () =>
-        Array.from({ length: 9 }, () => ({ value: 0, isFixed: false })))
+        Array.from({ length: 9 }, () => (getEmptyCell())))
     return emptyBoard
 }
-function getBoard() {
-    const board = JSON.parse(localStorage.getItem('board'));
-    return board || getEmptyBoard();
+
+export function getEmptyCell() {
+    return { value: 0, isFixed: false };
 }
-function setBoard(board) {
-    localStorage.setItem('board', JSON.stringify(board));
+
+async function getBoard() {
+    try {
+        console.log('board service -> getting board');
+        let board = await storageService.query(boardDB);
+        console.log('board service -> board:', board);
+
+        if (!board || !board.cells) {
+            const emptyBoard = getEmptyBoard();
+            board = storageService.save(boardDB, emptyBoard);
+            console.log('board service -> no board found, created empty board:', board);
+        }
+
+        return board;
+    } catch (err) {
+        console.error('board service -> could not get board', err);
+        throw err; // cleaner than Promise.reject
+    }
 }
-function getCell(board, row, col) {
-    return board[row][col];
+
+
+async function setBoard(board) {
+    await storageService.set(boardDB, board);
 }
-function setCell(board, row, col, value) {
-    board[row][col].value = value;
+
+
+async function setCell(row, col, value, isFixed = false) {
+    if (row < 0 || row >= 9 || col < 0 || col >= 9) {
+        throw new Error('Row or column index out of bounds');
+    }
+
+    if (value < 0 || value > 9) {
+        throw new Error('Value must be between 0 and 9');
+    }
+
+    let board = await getBoard();
+    console.log(board + "heyhgey");
+
+    board.cells[row][col] = {
+        ...board.cells[row][col], value, isFixed
+    };
+    console.log('board service -> setting cell', { row, col, value, isFixed });
+    await setBoard(board);
     return board;
 }
+
+
 function getRow(board, row) {
     return board[row];
 }
+
+
 function getCol(board, col) {
     return board.map(row => row[col]);
 }
+
+
 function getBox(board, row, col) {
     const boxRowStart = Math.floor(row / 3) * 3;
     const boxColStart = Math.floor(col / 3) * 3;
@@ -51,18 +111,20 @@ function getBox(board, row, col) {
     }
     return box;
 }
-export function getEmptyCell() {
-    return { value: 0, isFixed: false };
-}
+
+
 export function getEmptyRow() {
     return Array.from({ length: 9 }, () => getEmptyCell());
 }
+
 export function getEmptyCol() {
     return Array.from({ length: 9 }, () => getEmptyCell());
 }
+
 export function getEmptyBox() {
     return Array.from({ length: 3 }, () => getEmptyRow());
 }
+
 
 export function getEmptyBoardWithFixedCells() {
     const board = getEmptyBoard();

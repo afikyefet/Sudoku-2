@@ -1,21 +1,21 @@
-import { resetSelectedCell, setCell } from "../store/actions/board.action";
 
-export function ActionBar({ selectedCell }) {
+export function ActionBar({ onSetValue, selectedCell, toggleFixed }) {
 
 
 
     return (
         <section className="action-bar">
-            <div className="cell value" onClick={() => setCell(selectedCell.row, selectedCell.col, 1)}>1</div>
-            <div className="cell value">2</div>
-            <div className="cell value">3</div>
-            <div className="cell value">4</div>
-            <div className="cell value">5</div>
-            <div className="cell value">6</div>
-            <div className="cell value">7</div>
-            <div className="cell value">8</div>
-            <div className="cell value">9</div>
-            <div className="cell value" onClick={() => resetSelectedCell()}>X</div>
+            {Array.from({ length: 9 }, (_, i) => (
+                <div
+                    key={i + 1}
+                    className={`cell value ${selectedCell && selectedCell.value === i + 1 ? 'selected' : ''}`}
+                    onClick={() => onSetValue(i + 1)}
+                >
+                    {i + 1}
+                </div>
+            ))}
+            <div className="cell value" onClick={() => onSetValue(null)}>X</div>
+            <div className="cell value" onClick={() => toggleFixed()}>F</div>
         </section >
     )
 }

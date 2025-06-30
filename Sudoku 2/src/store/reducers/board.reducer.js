@@ -1,4 +1,3 @@
-import { boardService } from "../../service/board.service.local";
 
 export const SET_BOARD = "SET_BOARD";
 export const SELECT_CELL = "SELECT_CELL";
@@ -8,7 +7,7 @@ export const SET_IS_LOADING = "SET_IS_LOADING";
 // export const SET_CELLS = "SET_CELLS";
 
 const initialState = {
-    board: boardService.getEmptyBoardWithValuesAndFixedCells(),
+    board: {},
     selectedCell: null,
     isLoading: false,
     lastBoard: [],
@@ -19,7 +18,7 @@ export function boardReducer(state = initialState, cmd = {}) {
         case SET_BOARD:
             return {
                 ...state,
-                board: cmd.board,
+                board: { ...cmd.board },
             };
         case SELECT_CELL:
             return {
