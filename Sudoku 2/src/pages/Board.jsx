@@ -22,7 +22,7 @@ export function Board() {
 
 
     function onCellClick(row, col) {
-        if (currentBoard.cells[row][col].isFixed) return;
+        // if (currentBoard.cells[row][col].isFixed) return;
         setSelectedCell(row, col);
     }
 
@@ -44,7 +44,7 @@ export function Board() {
 
         const { row, col } = selectedCell;
 
-        if (currentBoard.cells[row][col].isFixed) return;
+        // if (currentBoard.cells[row][col].isFixed) return;
 
 
         console.log('setting cell', row, col, value);
