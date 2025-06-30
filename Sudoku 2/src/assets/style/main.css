@@ -123,13 +123,26 @@ footer {
   margin-right: 3px;
 }
 
+.action-bar {
+  height: 40px;
+  display: flex;
+  background-color: red;
+  justify-content: center;
+}
+.action-bar .cell {
+  background-color: grey;
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  margin: 4px;
+}
+
 .board-container {
   display: grid;
   grid-template-columns: repeat(9, auto);
   grid-template-rows: repeat(9, auto);
   gap: 4px;
   place-content: center;
-  height: 100vh;
 }
 
 /*# sourceMappingURL=main.css.map */
