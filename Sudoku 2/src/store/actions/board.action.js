@@ -56,6 +56,10 @@ export function setSelectedCell(row, col) {
     return store.dispatch({ type: 'SELECT_CELL', cell: { row, col } });
 }
 
+export function resetSelectedCell() {
+    return store.dispatch({ type: 'SELECT_CELL', cell: null });
+}
+
 
 
 

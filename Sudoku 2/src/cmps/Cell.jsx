@@ -1,7 +1,8 @@
-export function Cell({ row, col, isSelected, value, isFixed, onClick }) {
+export function Cell({ row, col, addExcludedRef, isSelected, isFixed, onClick }) {
 
     return (
         <div
+            ref={addExcludedRef}
             className={`cell-container ${row == 2 || row == 5 ? 'bottom-gap' : ''} ${col == 2 || col == 5 ? 'right-gap' : ''} ${isSelected ? 'selected' : ''} ${isFixed ? 'fixed' : ''}`}
             onClick={() => !isFixed && onClick(row, col)}
             style={{
