@@ -1,4 +1,4 @@
-export function Cell({ row, col, addExcludedRef, isSelected, isFixed, onClick }) {
+export function Cell({ row, col, addExcludedRef, value, isSelected, isFixed, onClick }) {
 
     return (
         <div
