@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: hsl(var(--heroui-background));
+    color: hsl(var(--heroui-foreground));
+  }
+}
+
+/* Custom Sudoku grid styles */
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 1px;
+  background: hsl(var(--heroui-default-300));
+  border: 2px solid hsl(var(--heroui-default-400));
+  max-width: 450px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.sudoku-cell {
+  background: hsl(var(--heroui-background));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 40px;
+}
+
+.sudoku-cell:hover {
+  background: hsl(var(--heroui-default-100));
+}
+
+.sudoku-cell.selected {
+  background: hsl(var(--heroui-primary-100));
+  color: hsl(var(--heroui-primary-600));
+}
+
+.sudoku-cell.highlighted {
+  background: hsl(var(--heroui-secondary-100));
+}
+
+.sudoku-cell.fixed {
+  background: hsl(var(--heroui-default-50));
+  color: hsl(var(--heroui-default-700));
+  font-weight: 700;
+  cursor: default;
+}
+
+.sudoku-cell.invalid {
+  background: hsl(var(--heroui-danger-100));
+  color: hsl(var(--heroui-danger-600));
+}
+
+/* Subgrid borders */
+.sudoku-cell:nth-child(3n) {
+  border-right: 2px solid hsl(var(--heroui-default-400));
+}
+
+.sudoku-cell:nth-child(n+19):nth-child(-n+27),
+.sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 2px solid hsl(var(--heroui-default-400));
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .sudoku-grid {
+    max-width: 320px;
+  }
+  
+  .sudoku-cell {
+    font-size: 1rem;
+    min-height: 32px;
+  }
+}
