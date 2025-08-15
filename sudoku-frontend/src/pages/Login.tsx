@@ -1,129 +1,200 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Input, Card, CardBody, CardHeader, Spinner } from '@heroui/react';
+import {
+  Form,
+  Input,
+  Button,
+  Card,
+  Typography,
+  Space,
+  Alert,
+  Divider,
+  theme
+} from 'antd';
+import {
+  UserOutlined,
+  LockOutlined,
+  PuzzleOutlined,
+  LoginOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone
+} from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 
-/**
- * Login Page Component
- */
-const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+const { Title, Text } = Typography;
 
+const Login: React.FC = () => {
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { token } = theme.useToken();
 
-  /**
-   * Handle form submission
-   */
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: { email: string; password: string }) => {
+    setLoading(true);
     setError('');
-    setIsLoading(true);
 
     try {
-      await login({ email, password });
+      await login(values.email, values.password);
       navigate('/dashboard');
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Login failed');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🧩</div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Sudoku Master
-          </h1>
-          <p className="text-lg text-gray-600">
-            Sign in to your account
-          </p>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: `linear-gradient(135deg, ${token.colorPrimary}15 0%, ${token.colorPrimaryBg} 100%)`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+      }}
+    >
+      <Card
+        style={{
+          width: '100%',
+          maxWidth: 400,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          borderRadius: 16,
+          border: 'none',
+        }}
+        bodyStyle={{ padding: '40px' }}
+      >
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <Space direction="vertical" size="middle">
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: 16,
+                background: `linear-gradient(135deg, ${token.colorPrimary} 0%, ${token.colorPrimaryActive} 100%)`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto',
+              }}
+            >
+              <PuzzleOutlined style={{ fontSize: 32, color: 'white' }} />
+            </div>
+            <div>
+              <Title level={2} style={{ margin: 0, color: token.colorTextHeading }}>
+                Welcome Back
+              </Title>
+              <Text type="secondary" style={{ fontSize: 16 }}>
+                Sign in to your SudokuMaster account
+              </Text>
+            </div>
+          </Space>
         </div>
-      </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="shadow-2xl">
-          <CardHeader className="flex flex-col gap-3 pb-6">
-            <h2 className="text-2xl font-semibold text-center">Welcome Back</h2>
-          </CardHeader>
-          <CardBody>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              {error && (
-                <Card className="bg-danger-50 border-danger-200">
-                  <CardBody className="py-3">
-                    <p className="text-danger text-sm">{error}</p>
-                  </CardBody>
-                </Card>
-              )}
+        {/* Error Alert */}
+        {error && (
+          <Alert
+            type="error"
+            message={error}
+            style={{ marginBottom: 24, borderRadius: 8 }}
+            showIcon
+          />
+        )}
 
-              <Input
-                type="email"
-                label="Email address"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                variant="bordered"
-                size="lg"
-                classNames={{
-                  input: "text-base",
-                  inputWrapper: "h-12"
-                }}
-              />
+        {/* Login Form */}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          size="large"
+          requiredMark={false}
+        >
+          <Form.Item
+            name="email"
+            label="Email Address"
+            rules={[
+              { required: true, message: 'Please enter your email' },
+              { type: 'email', message: 'Please enter a valid email' },
+            ]}
+          >
+            <Input
+              prefix={<UserOutlined style={{ color: token.colorTextSecondary }} />}
+              placeholder="Enter your email"
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
 
-              <Input
-                type="password"
-                label="Password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                variant="bordered"
-                size="lg"
-                classNames={{
-                  input: "text-base",
-                  inputWrapper: "h-12"
-                }}
-              />
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Please enter your password' }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined style={{ color: token.colorTextSecondary }} />}
+              placeholder="Enter your password"
+              iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
 
-              <Button
-                type="submit"
-                color="primary"
-                size="lg"
-                className="w-full"
-                isLoading={isLoading}
-                spinner={<Spinner size="sm" color="white" />}
-              >
-                {isLoading ? 'Signing in...' : 'Sign In'}
-              </Button>
+          <Form.Item style={{ marginTop: 32, marginBottom: 0 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              icon={<LoginOutlined />}
+              block
+              style={{
+                height: 48,
+                borderRadius: 8,
+                fontSize: 16,
+                fontWeight: 500,
+              }}
+            >
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Button>
+          </Form.Item>
+        </Form>
 
-              <div className="text-center pt-4">
-                <p className="text-sm text-gray-600">
-                  Don't have an account?{' '}
-                  <Link
-                    to="/register"
-                    className="font-medium text-primary hover:text-primary-600 transition-colors"
-                  >
-                    Sign up here
-                  </Link>
-                </p>
-              </div>
-            </form>
-          </CardBody>
+        <Divider style={{ margin: '32px 0' }}>
+          <Text type="secondary">Don't have an account?</Text>
+        </Divider>
+
+        {/* Register Link */}
+        <div style={{ textAlign: 'center' }}>
+          <Button
+            type="link"
+            size="large"
+            onClick={() => navigate('/register')}
+            style={{
+              padding: 0,
+              height: 'auto',
+              fontSize: 16,
+              fontWeight: 500,
+            }}
+          >
+            Create New Account
+          </Button>
+        </div>
+
+        {/* Demo Account Info */}
+        <Card
+          size="small"
+          style={{
+            marginTop: 24,
+            background: token.colorInfoBg,
+            border: `1px solid ${token.colorInfoBorder}`,
+            borderRadius: 8,
+          }}
+        >
+          <Text type="secondary" style={{ fontSize: 12 }}>
+            <strong>Demo:</strong> Use any email and password to try the app with mock data
+          </Text>
         </Card>
-      </div>
-
-      <div className="mt-8 text-center">
-        <p className="text-sm text-gray-500">
-          Create and solve beautiful Sudoku puzzles online
-        </p>
-      </div>
+      </Card>
     </div>
   );
 };
