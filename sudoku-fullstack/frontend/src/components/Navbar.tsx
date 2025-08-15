@@ -143,12 +143,7 @@ const Navbar = () => {
               >
                 <BellIcon className="w-5 h-5" />
                 {unreadCount > 0 && (
-                  <Badge
-                    content={unreadCount > 99 ? '99+' : unreadCount}
-                    color="danger"
-                    size="sm"
-                    className="absolute -top-1 -right-1"
-                  />
+                  <Badge color="danger" size="sm" className="absolute -top-1 -right-1">{unreadCount > 99 ? '99+' : unreadCount}</Badge>
                 )}
               </Button>
             </NavbarItem>
@@ -177,7 +172,7 @@ const Navbar = () => {
                     key="profile"
                     startContent={<UserIcon className="w-4 h-4" />}
                     as={Link}
-                    to="/profile"
+                    href="/profile"
                   >
                     My Profile
                   </DropdownItem>
@@ -185,7 +180,7 @@ const Navbar = () => {
                     key="dashboard"
                     startContent={<HomeIcon className="w-4 h-4" />}
                     as={Link}
-                    to="/dashboard"
+                    href="/dashboard"
                   >
                     My Puzzles
                   </DropdownItem>
@@ -193,7 +188,7 @@ const Navbar = () => {
                     key="discover"
                     startContent={<MagnifyingGlassIcon className="w-4 h-4" />}
                     as={Link}
-                    to="/discover"
+                    href="/discover"
                   >
                     Discover
                   </DropdownItem>
@@ -201,7 +196,7 @@ const Navbar = () => {
                     key="settings"
                     startContent={<Cog6ToothIcon className="w-4 h-4" />}
                     as={Link}
-                    to="/settings"
+                    href="/settings"
                   >
                     Settings
                   </DropdownItem>

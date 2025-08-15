@@ -47,7 +47,6 @@ const DiscoveryPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTab, setSelectedTab] = useState<string>('trending');
-    const [showFilters, setShowFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [activeFilters, setActiveFilters] = useState<PuzzleFilters>({});
@@ -78,9 +77,9 @@ const DiscoveryPage = () => {
 
             if (response.success && response.data) {
                 if (currentPage === 1) {
-                    setPuzzles(response.data.puzzles || []);
+                    setPuzzles(response.data.items || []);
                 } else {
-                    setPuzzles(prev => [...prev, ...(response.data?.puzzles || [])]);
+                    setPuzzles(prev => [...prev, ...(response.data?.items || [])]);
                 }
 
                 setHasMore(response.data.pagination?.hasNext || false);
@@ -365,7 +364,7 @@ const DiscoveryPage = () => {
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold truncate">{puzzle.title}</h3>
                                                 {puzzle.user.isVerified && (
-                                                    <Badge content="✓" color="primary" size="sm" />
+                                                    <Badge color="primary" size="sm">✓</Badge>
                                                 )}
                                             </div>
                                             <UserComponent
@@ -453,10 +452,7 @@ const DiscoveryPage = () => {
                                                     <HeartFilledIcon className="w-4 h-4" /> :
                                                     <HeartIcon className="w-4 h-4" />
                                             }
-                                            onPress={(e) => {
-                                                e.stopPropagation();
-                                                handleLike(puzzle._id);
-                                            }}
+                                            onPress={() => handleLike(puzzle._id)}
                                         >
                                             {puzzle.likeCount || 0}
                                         </Button>
@@ -465,10 +461,7 @@ const DiscoveryPage = () => {
                                             size="sm"
                                             variant="light"
                                             startContent={<ChatBubbleLeftIcon className="w-4 h-4" />}
-                                            onPress={(e) => {
-                                                e.stopPropagation();
-                                                navigate(`/puzzle/${puzzle._id}#comments`);
-                                            }}
+                                            onPress={() => navigate(`/puzzle/${puzzle._id}#comments`)}
                                         >
                                             {puzzle.commentCount || 0}
                                         </Button>
@@ -480,7 +473,7 @@ const DiscoveryPage = () => {
                                                 size="sm"
                                                 variant="light"
                                                 isIconOnly
-                                                onPress={(e) => e.stopPropagation()}
+                                                onPress={() => {}}
                                             >
                                                 <ShareIcon className="w-4 h-4" />
                                             </Button>

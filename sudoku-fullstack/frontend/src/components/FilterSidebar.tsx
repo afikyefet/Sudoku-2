@@ -95,10 +95,10 @@ const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
                         }}
                         variant="bordered"
                     >
-                        <SelectItem key="easy" value="easy">Easy</SelectItem>
-                        <SelectItem key="medium" value="medium">Medium</SelectItem>
-                        <SelectItem key="hard" value="hard">Hard</SelectItem>
-                        <SelectItem key="expert" value="expert">Expert</SelectItem>
+                        <SelectItem key="easy">Easy</SelectItem>
+                        <SelectItem key="medium">Medium</SelectItem>
+                        <SelectItem key="hard">Hard</SelectItem>
+                        <SelectItem key="expert">Expert</SelectItem>
                     </Select>
                 </CardBody>
             </Card>
@@ -117,10 +117,10 @@ const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
                         }}
                         variant="bordered"
                     >
-                        <SelectItem key="classic" value="classic">Classic</SelectItem>
-                        <SelectItem key="themed" value="themed">Themed</SelectItem>
-                        <SelectItem key="challenge" value="challenge">Challenge</SelectItem>
-                        <SelectItem key="community" value="community">Community</SelectItem>
+                        <SelectItem key="classic">Classic</SelectItem>
+                        <SelectItem key="themed">Themed</SelectItem>
+                        <SelectItem key="challenge">Challenge</SelectItem>
+                        <SelectItem key="community">Community</SelectItem>
                     </Select>
                 </CardBody>
             </Card>

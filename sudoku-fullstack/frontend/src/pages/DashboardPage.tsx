@@ -1,30 +1,29 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
+  Button,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
-  Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
+  CardHeader,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spinner,
   Textarea,
   useDisclosure,
-  Chip,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Spinner,
 } from '@heroui/react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { sudokuAPI } from '../services/api';
-import type { SudokuPuzzle, SudokuInput } from '../types';
+import type { SudokuInput, SudokuPuzzle } from '../types';
 import { generateSamplePuzzle } from '../utils/sudokuValidator';
 
 const DashboardPage = () => {
@@ -35,7 +34,7 @@ const DashboardPage = () => {
     title: '',
     puzzleData: generateSamplePuzzle(),
   });
-  
+
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -97,12 +96,12 @@ const DashboardPage = () => {
     try {
       const parsed = JSON.parse(value);
       if (Array.isArray(parsed) && parsed.length === 9) {
-        const isValid = parsed.every(row => 
-          Array.isArray(row) && 
-          row.length === 9 && 
+        const isValid = parsed.every(row =>
+          Array.isArray(row) &&
+          row.length === 9 &&
           row.every(cell => Number.isInteger(cell) && cell >= 0 && cell <= 9)
         );
-        
+
         if (isValid) {
           setNewPuzzle(prev => ({ ...prev, puzzleData: parsed }));
         } else {
@@ -204,7 +203,7 @@ const DashboardPage = () => {
                   </DropdownMenu>
                 </Dropdown>
               </CardHeader>
-              
+
               <CardBody>
                 <div className="grid grid-cols-9 gap-px bg-default-300 p-2 rounded-lg aspect-square">
                   {puzzle.puzzleData.flat().map((cell, index) => (
@@ -217,7 +216,7 @@ const DashboardPage = () => {
                   ))}
                 </div>
               </CardBody>
-              
+
               <CardFooter>
                 <Button
                   color="primary"
@@ -234,8 +233,8 @@ const DashboardPage = () => {
       )}
 
       {/* Create Puzzle Modal */}
-      <Modal 
-        isOpen={isOpen} 
+      <Modal
+        isOpen={isOpen}
         onOpenChange={onOpenChange}
         size="2xl"
         scrollBehavior="inside"
@@ -255,14 +254,14 @@ const DashboardPage = () => {
                     label="Puzzle Title"
                     placeholder="Enter puzzle title (e.g., Easy Puzzle 1)"
                     value={newPuzzle.title}
-                    onChange={(e) => setNewPuzzle(prev => ({ 
-                      ...prev, 
-                      title: e.target.value 
+                    onChange={(e) => setNewPuzzle(prev => ({
+                      ...prev,
+                      title: e.target.value
                     }))}
                     variant="bordered"
                     isRequired
                   />
-                  
+
                   <Textarea
                     label="Puzzle Data (JSON)"
                     placeholder="Paste or edit the puzzle data..."
@@ -272,7 +271,7 @@ const DashboardPage = () => {
                     minRows={8}
                     className="font-mono text-small"
                   />
-                  
+
                   <div className="bg-default-100 rounded-lg p-4">
                     <h4 className="font-semibold mb-2">Preview:</h4>
                     <div className="grid grid-cols-9 gap-px bg-default-300 max-w-xs aspect-square">
@@ -286,7 +285,7 @@ const DashboardPage = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                     <p className="text-small text-blue-800">
                       <strong>Format:</strong> 9x9 array with numbers 0-9 (0 = empty cell)
@@ -295,15 +294,15 @@ const DashboardPage = () => {
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button 
-                  color="danger" 
-                  variant="light" 
+                <Button
+                  color="danger"
+                  variant="light"
                   onPress={onClose}
                 >
                   Cancel
                 </Button>
-                <Button 
-                  color="primary" 
+                <Button
+                  color="primary"
                   onPress={handleCreatePuzzle}
                   isLoading={isCreating}
                   disabled={!newPuzzle.title.trim() || isCreating}

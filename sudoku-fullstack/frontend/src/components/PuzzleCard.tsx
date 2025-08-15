@@ -54,13 +54,11 @@ const PuzzleCard = ({
         navigate(`/puzzle/${puzzle._id}`);
     };
 
-    const handleLike = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const handleLike = () => {
         onLike?.(puzzle._id);
     };
 
-    const handleComment = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const handleComment = () => {
         navigate(`/puzzle/${puzzle._id}#comments`);
     };
 
@@ -86,7 +84,7 @@ const PuzzleCard = ({
                             <div className="flex items-center gap-2">
                                 <h3 className="font-semibold truncate">{puzzle.title}</h3>
                                 {puzzle.user.isVerified && (
-                                    <Badge content="✓" color="primary" size="sm" />
+                                    <Badge color="primary" size="sm">✓</Badge>
                                 )}
                             </div>
                             <UserComponent
@@ -209,7 +207,7 @@ const PuzzleCard = ({
                             size="sm"
                             variant="light"
                             isIconOnly
-                            onPress={(e) => e.stopPropagation()}
+                            onPress={() => { }}
                         >
                             <ShareIcon className="w-4 h-4" />
                         </Button>

@@ -30,7 +30,7 @@ interface SocketProviderProps {
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [isConnected, setIsConnected] = useState(false);
-    const [activePlayers, setActivePlayers] = useState<{ [puzzleId: string]: number }>({});
+    const [activePlayers] = useState<{ [puzzleId: string]: number }>({});
     const { user, token } = useAuth();
 
     useEffect(() => {

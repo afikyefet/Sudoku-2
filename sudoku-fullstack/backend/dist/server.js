@@ -115,7 +115,10 @@ app.set('io', io);
 const startServer = async () => {
     try {
         // Connect to MongoDB
-        await (0, database_1.connectDB)();
+        const connected = await (0, database_1.connectDB)();
+        if (!connected) {
+            console.warn('⚠️ Server starting without MongoDB. Some features may be limited.');
+        }
         // Start listening
         httpServer.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);
