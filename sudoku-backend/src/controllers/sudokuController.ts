@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { Sudoku } from '../models/Sudoku';
 import { IAuthRequest, IApiResponse } from '../types';
+import { mockDB } from '../utils/mockData';
 
 /**
  * Get all puzzles for the authenticated user
@@ -17,10 +18,16 @@ export const getUserPuzzles = async (req: IAuthRequest, res: Response): Promise<
       return;
     }
 
-    // Get all puzzles for the user, sorted by creation date (newest first)
-    const puzzles = await Sudoku.find({ user: userId })
-      .sort({ createdAt: -1 })
-      .select('title puzzleData createdAt');
+    // Try MongoDB first, fallback to mock data
+    let puzzles;
+    try {
+      puzzles = await Sudoku.find({ user: userId })
+        .sort({ createdAt: -1 })
+        .select('title puzzleData createdAt');
+    } catch (dbError) {
+      console.log('MongoDB not available, using mock database');
+      puzzles = await mockDB.findSudokusByUser(userId);
+    }
 
     res.status(200).json({
       success: true,
@@ -66,37 +73,57 @@ export const createPuzzle = async (req: IAuthRequest, res: Response): Promise<vo
       return;
     }
 
-    // Check if user has reached the 20 puzzle limit
-    const userPuzzleCount = await Sudoku.countDocuments({ user: userId });
-    if (userPuzzleCount >= 20) {
-      res.status(403).json({
-        success: false,
-        message: 'Maximum of 20 puzzles allowed per user. Please delete some puzzles before adding new ones.'
-      } as IApiResponse);
-      return;
+    // Try MongoDB first, fallback to mock data
+    let puzzle;
+    try {
+      // Check if user has reached the 20 puzzle limit
+      const userPuzzleCount = await Sudoku.countDocuments({ user: userId });
+      if (userPuzzleCount >= 20) {
+        res.status(403).json({
+          success: false,
+          message: 'Maximum of 20 puzzles allowed per user. Please delete some puzzles before adding new ones.'
+        } as IApiResponse);
+        return;
+      }
+
+      // Create new puzzle
+      puzzle = new Sudoku({
+        user: userId,
+        title: title.trim(),
+        puzzleData
+      });
+
+      await puzzle.save();
+      
+    } catch (dbError) {
+      console.log('MongoDB not available, using mock database');
+      
+      // Check puzzle limit in mock DB
+      const userPuzzleCount = await mockDB.countSudokusByUser(userId);
+      if (userPuzzleCount >= 20) {
+        res.status(403).json({
+          success: false,
+          message: 'Maximum of 20 puzzles allowed per user. Please delete some puzzles before adding new ones.'
+        } as IApiResponse);
+        return;
+      }
+
+      // Create puzzle in mock DB
+      puzzle = await mockDB.createSudoku(userId, title.trim(), puzzleData);
     }
 
-    // Create new puzzle
-    const puzzle = new Sudoku({
-      user: userId,
-      title: title.trim(),
-      puzzleData
-    });
-
-    await puzzle.save();
-
-    res.status(201).json({
-      success: true,
-      message: 'Puzzle created successfully',
-      data: {
-        puzzle: {
-          id: puzzle._id,
-          title: puzzle.title,
-          puzzleData: puzzle.puzzleData,
-          createdAt: puzzle.createdAt
+          res.status(201).json({
+        success: true,
+        message: 'Puzzle created successfully',
+        data: {
+          puzzle: {
+            id: (puzzle as any)._id || (puzzle as any).id,
+            title: puzzle.title,
+            puzzleData: puzzle.puzzleData,
+            createdAt: puzzle.createdAt
+          }
         }
-      }
-    } as IApiResponse);
+      } as IApiResponse);
 
   } catch (error) {
     console.error('Create puzzle error:', error);
@@ -143,11 +170,17 @@ export const deletePuzzle = async (req: IAuthRequest, res: Response): Promise<vo
       return;
     }
 
-    // Find and delete puzzle (only if it belongs to the user)
-    const deletedPuzzle = await Sudoku.findOneAndDelete({
-      _id: id,
-      user: userId
-    });
+    // Try MongoDB first, fallback to mock data
+    let deletedPuzzle;
+    try {
+      deletedPuzzle = await Sudoku.findOneAndDelete({
+        _id: id,
+        user: userId
+      });
+    } catch (dbError) {
+      console.log('MongoDB not available, using mock database');
+      deletedPuzzle = await mockDB.deleteSudoku(id, userId);
+    }
 
     if (!deletedPuzzle) {
       res.status(404).json({
@@ -160,12 +193,12 @@ export const deletePuzzle = async (req: IAuthRequest, res: Response): Promise<vo
     res.status(200).json({
       success: true,
       message: 'Puzzle deleted successfully',
-      data: {
-        deletedPuzzle: {
-          id: deletedPuzzle._id,
-          title: deletedPuzzle.title
+              data: {
+          deletedPuzzle: {
+            id: (deletedPuzzle as any)._id || (deletedPuzzle as any).id,
+            title: deletedPuzzle.title
+          }
         }
-      }
     } as IApiResponse);
 
   } catch (error) {
@@ -202,11 +235,17 @@ export const getPuzzle = async (req: IAuthRequest, res: Response): Promise<void>
       return;
     }
 
-    // Find puzzle (only if it belongs to the user)
-    const puzzle = await Sudoku.findOne({
-      _id: id,
-      user: userId
-    });
+    // Try MongoDB first, fallback to mock data
+    let puzzle;
+    try {
+      puzzle = await Sudoku.findOne({
+        _id: id,
+        user: userId
+      });
+    } catch (dbError) {
+      console.log('MongoDB not available, using mock database');
+      puzzle = await mockDB.findSudokuById(id, userId);
+    }
 
     if (!puzzle) {
       res.status(404).json({
@@ -216,18 +255,18 @@ export const getPuzzle = async (req: IAuthRequest, res: Response): Promise<void>
       return;
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Puzzle retrieved successfully',
-      data: {
-        puzzle: {
-          id: puzzle._id,
-          title: puzzle.title,
-          puzzleData: puzzle.puzzleData,
-          createdAt: puzzle.createdAt
+          res.status(200).json({
+        success: true,
+        message: 'Puzzle retrieved successfully',
+        data: {
+          puzzle: {
+            id: (puzzle as any)._id || (puzzle as any).id,
+            title: puzzle.title,
+            puzzleData: puzzle.puzzleData,
+            createdAt: puzzle.createdAt
+          }
         }
-      }
-    } as IApiResponse);
+      } as IApiResponse);
 
   } catch (error) {
     console.error('Get puzzle error:', error);

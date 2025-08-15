@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.register = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const User_1 = require("../models/User");
+const mockData_1 = require("../utils/mockData");
 const generateToken = (userId, email) => {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
@@ -30,31 +32,58 @@ const register = async (req, res) => {
             });
             return;
         }
-        const existingUser = await User_1.User.findOne({ email: email.toLowerCase() });
-        if (existingUser) {
-            res.status(409).json({
-                success: false,
-                message: 'User with this email already exists'
-            });
-            return;
-        }
-        const user = new User_1.User({
-            email: email.toLowerCase(),
-            password
-        });
-        await user.save();
-        const token = generateToken(user._id, user.email);
-        res.status(201).json({
-            success: true,
-            message: 'User registered successfully',
-            data: {
-                token,
-                user: {
-                    id: user._id,
-                    email: user.email
-                }
+        try {
+            const existingUser = await User_1.User.findOne({ email: email.toLowerCase() });
+            if (existingUser) {
+                res.status(409).json({
+                    success: false,
+                    message: 'User with this email already exists'
+                });
+                return;
             }
-        });
+            const user = new User_1.User({
+                email: email.toLowerCase(),
+                password
+            });
+            await user.save();
+            const token = generateToken(user._id, user.email);
+            res.status(201).json({
+                success: true,
+                message: 'User registered successfully',
+                data: {
+                    token,
+                    user: {
+                        id: user._id,
+                        email: user.email
+                    }
+                }
+            });
+        }
+        catch (dbError) {
+            console.log('MongoDB not available, using mock database');
+            const existingUser = await mockData_1.mockDB.findUserByEmail(email);
+            if (existingUser) {
+                res.status(409).json({
+                    success: false,
+                    message: 'User with this email already exists'
+                });
+                return;
+            }
+            const hashedPassword = await bcryptjs_1.default.hash(password, 12);
+            const user = await mockData_1.mockDB.createUser(email, hashedPassword);
+            const token = generateToken(user.id, user.email);
+            res.status(201).json({
+                success: true,
+                message: 'User registered successfully',
+                data: {
+                    token,
+                    user: {
+                        id: user.id,
+                        email: user.email
+                    }
+                }
+            });
+        }
     }
     catch (error) {
         console.error('Registration error:', error);
@@ -76,34 +105,67 @@ const login = async (req, res) => {
             });
             return;
         }
-        const user = await User_1.User.findOne({ email: email.toLowerCase() });
-        if (!user) {
-            res.status(401).json({
-                success: false,
-                message: 'Invalid email or password'
-            });
-            return;
-        }
-        const isPasswordValid = await user.comparePassword(password);
-        if (!isPasswordValid) {
-            res.status(401).json({
-                success: false,
-                message: 'Invalid email or password'
-            });
-            return;
-        }
-        const token = generateToken(user._id, user.email);
-        res.status(200).json({
-            success: true,
-            message: 'Login successful',
-            data: {
-                token,
-                user: {
-                    id: user._id,
-                    email: user.email
-                }
+        try {
+            const user = await User_1.User.findOne({ email: email.toLowerCase() });
+            if (!user) {
+                res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
+                return;
             }
-        });
+            const isPasswordValid = await user.comparePassword(password);
+            if (!isPasswordValid) {
+                res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
+                return;
+            }
+            const token = generateToken(user._id, user.email);
+            res.status(200).json({
+                success: true,
+                message: 'Login successful',
+                data: {
+                    token,
+                    user: {
+                        id: user._id,
+                        email: user.email
+                    }
+                }
+            });
+        }
+        catch (dbError) {
+            console.log('MongoDB not available, using mock database');
+            const user = await mockData_1.mockDB.findUserByEmail(email);
+            if (!user) {
+                res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
+                return;
+            }
+            const isPasswordValid = await bcryptjs_1.default.compare(password, user.password);
+            if (!isPasswordValid) {
+                res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
+                return;
+            }
+            const token = generateToken(user.id, user.email);
+            res.status(200).json({
+                success: true,
+                message: 'Login successful',
+                data: {
+                    token,
+                    user: {
+                        id: user.id,
+                        email: user.email
+                    }
+                }
+            });
+        }
     }
     catch (error) {
         console.error('Login error:', error);

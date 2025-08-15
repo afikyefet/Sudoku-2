@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPuzzle = exports.deletePuzzle = exports.createPuzzle = exports.getUserPuzzles = void 0;
 const Sudoku_1 = require("../models/Sudoku");
+const mockData_1 = require("../utils/mockData");
 const getUserPuzzles = async (req, res) => {
     try {
         const userId = req.user?.userId;
@@ -12,9 +13,16 @@ const getUserPuzzles = async (req, res) => {
             });
             return;
         }
-        const puzzles = await Sudoku_1.Sudoku.find({ user: userId })
-            .sort({ createdAt: -1 })
-            .select('title puzzleData createdAt');
+        let puzzles;
+        try {
+            puzzles = await Sudoku_1.Sudoku.find({ user: userId })
+                .sort({ createdAt: -1 })
+                .select('title puzzleData createdAt');
+        }
+        catch (dbError) {
+            console.log('MongoDB not available, using mock database');
+            puzzles = await mockData_1.mockDB.findSudokusByUser(userId);
+        }
         res.status(200).json({
             success: true,
             message: 'Puzzles retrieved successfully',
@@ -52,26 +60,41 @@ const createPuzzle = async (req, res) => {
             });
             return;
         }
-        const userPuzzleCount = await Sudoku_1.Sudoku.countDocuments({ user: userId });
-        if (userPuzzleCount >= 20) {
-            res.status(403).json({
-                success: false,
-                message: 'Maximum of 20 puzzles allowed per user. Please delete some puzzles before adding new ones.'
+        let puzzle;
+        try {
+            const userPuzzleCount = await Sudoku_1.Sudoku.countDocuments({ user: userId });
+            if (userPuzzleCount >= 20) {
+                res.status(403).json({
+                    success: false,
+                    message: 'Maximum of 20 puzzles allowed per user. Please delete some puzzles before adding new ones.'
+                });
+                return;
+            }
+            puzzle = new Sudoku_1.Sudoku({
+                user: userId,
+                title: title.trim(),
+                puzzleData
             });
-            return;
+            await puzzle.save();
         }
-        const puzzle = new Sudoku_1.Sudoku({
-            user: userId,
-            title: title.trim(),
-            puzzleData
-        });
-        await puzzle.save();
+        catch (dbError) {
+            console.log('MongoDB not available, using mock database');
+            const userPuzzleCount = await mockData_1.mockDB.countSudokusByUser(userId);
+            if (userPuzzleCount >= 20) {
+                res.status(403).json({
+                    success: false,
+                    message: 'Maximum of 20 puzzles allowed per user. Please delete some puzzles before adding new ones.'
+                });
+                return;
+            }
+            puzzle = await mockData_1.mockDB.createSudoku(userId, title.trim(), puzzleData);
+        }
         res.status(201).json({
             success: true,
             message: 'Puzzle created successfully',
             data: {
                 puzzle: {
-                    id: puzzle._id,
+                    id: puzzle._id || puzzle.id,
                     title: puzzle.title,
                     puzzleData: puzzle.puzzleData,
                     createdAt: puzzle.createdAt
@@ -115,10 +138,17 @@ const deletePuzzle = async (req, res) => {
             });
             return;
         }
-        const deletedPuzzle = await Sudoku_1.Sudoku.findOneAndDelete({
-            _id: id,
-            user: userId
-        });
+        let deletedPuzzle;
+        try {
+            deletedPuzzle = await Sudoku_1.Sudoku.findOneAndDelete({
+                _id: id,
+                user: userId
+            });
+        }
+        catch (dbError) {
+            console.log('MongoDB not available, using mock database');
+            deletedPuzzle = await mockData_1.mockDB.deleteSudoku(id, userId);
+        }
         if (!deletedPuzzle) {
             res.status(404).json({
                 success: false,
@@ -131,7 +161,7 @@ const deletePuzzle = async (req, res) => {
             message: 'Puzzle deleted successfully',
             data: {
                 deletedPuzzle: {
-                    id: deletedPuzzle._id,
+                    id: deletedPuzzle._id || deletedPuzzle.id,
                     title: deletedPuzzle.title
                 }
             }
@@ -165,10 +195,17 @@ const getPuzzle = async (req, res) => {
             });
             return;
         }
-        const puzzle = await Sudoku_1.Sudoku.findOne({
-            _id: id,
-            user: userId
-        });
+        let puzzle;
+        try {
+            puzzle = await Sudoku_1.Sudoku.findOne({
+                _id: id,
+                user: userId
+            });
+        }
+        catch (dbError) {
+            console.log('MongoDB not available, using mock database');
+            puzzle = await mockData_1.mockDB.findSudokuById(id, userId);
+        }
         if (!puzzle) {
             res.status(404).json({
                 success: false,
@@ -181,7 +218,7 @@ const getPuzzle = async (req, res) => {
             message: 'Puzzle retrieved successfully',
             data: {
                 puzzle: {
-                    id: puzzle._id,
+                    id: puzzle._id || puzzle.id,
                     title: puzzle.title,
                     puzzleData: puzzle.puzzleData,
                     createdAt: puzzle.createdAt
