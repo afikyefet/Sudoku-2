@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import {
+  Button,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
-  Input,
-  Button,
+  CardHeader,
   Divider,
+  Input,
 } from '@heroui/react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const RegisterPage = () => {
@@ -17,12 +17,12 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { register, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!email) {
       newErrors.email = 'Email is required';
@@ -56,7 +56,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -111,7 +111,7 @@ const RegisterPage = () => {
               isInvalid={!!errors.username}
               errorMessage={errors.username}
             />
-            
+
             <Input
               type={isVisible ? "text" : "password"}
               label="Password"
