@@ -15,7 +15,11 @@ export const connectDatabase = async (): Promise<void> => {
     console.log('✅ MongoDB connected successfully');
   } catch (error) {
     console.error('❌ MongoDB connection failed:', error);
-    process.exit(1);
+    console.log('⚠️  The server will continue running but database features will not work.');
+    console.log('💡 To fix this:');
+    console.log('   1. Install and start MongoDB locally, or');
+    console.log('   2. Use MongoDB Atlas and update MONGODB_URI in .env');
+    // Don't exit, continue running for demo purposes
   }
 };
 
