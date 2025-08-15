@@ -1,5 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  Button, 
+  Input, 
+  Card, 
+  CardBody, 
+  CardHeader, 
+  CardFooter,
+  Textarea, 
+  RadioGroup, 
+  Radio,
+  Chip,
+  Spinner,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem
+} from '@heroui/react';
 import { useAuth } from '../contexts/AuthContext';
 import { sudokuAPI, handleApiError } from '../services/api';
 import { SudokuPuzzle, CreatePuzzleData } from '../types';
@@ -155,11 +172,13 @@ const Dashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your puzzles...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <Card className="p-8">
+          <CardBody className="text-center space-y-4">
+            <Spinner size="lg" color="primary" />
+            <p className="text-gray-600">Loading your puzzles...</p>
+          </CardBody>
+        </Card>
       </div>
     );
   }

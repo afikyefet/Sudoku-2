@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HeroUIProvider } from '@heroui/react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
@@ -79,13 +80,15 @@ const AppContent: React.FC = () => {
  */
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="App">
-          <AppContent />
-        </div>
-      </Router>
-    </AuthProvider>
+    <HeroUIProvider>
+      <AuthProvider>
+        <Router>
+          <div className="App">
+            <AppContent />
+          </div>
+        </Router>
+      </AuthProvider>
+    </HeroUIProvider>
   );
 }
 
