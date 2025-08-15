@@ -3,14 +3,26 @@ import {
   getUserPuzzles, 
   createPuzzle, 
   getPuzzleById, 
-  deletePuzzle 
+  deletePuzzle,
+  getPublicPuzzles,
+  getPublicPuzzleById,
+  getUserProfile,
+  getLeaderboard
 } from '../controllers/sudokuController';
 import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
 
-// Apply authentication middleware to all routes
+// Public routes (no authentication required)
+router.get('/public', getPublicPuzzles);           // GET /api/sudoku/public - Get all public puzzles
+router.get('/public/:id', getPublicPuzzleById);    // GET /api/sudoku/public/:id - Get any puzzle by ID
+router.get('/leaderboard', getLeaderboard);        // GET /api/sudoku/leaderboard - Get user leaderboard
+
+// Protected routes (authentication required)
 router.use(authenticateToken);
+
+// GET /api/sudoku/profile - Get user profile
+router.get('/profile', getUserProfile);
 
 // GET /api/sudoku - Get all user's puzzles
 router.get('/', getUserPuzzles);

@@ -1,17 +1,18 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HeroUIProvider } from '@heroui/react';
 import { Toaster } from 'react-hot-toast';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Pages
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import DiscoveryPage from './pages/DiscoveryPage';
+import LoginPage from './pages/LoginPage';
 import PuzzleEditorPage from './pages/PuzzleEditorPage';
+import RegisterPage from './pages/RegisterPage';
 
 // Components
-import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
+import Navbar from './components/Navbar';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -75,6 +76,14 @@ function AppContent() {
             }
           />
           <Route
+            path="/discover"
+            element={
+              <ProtectedRoute>
+                <DiscoveryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/puzzle/:id"
             element={
               <ProtectedRoute>
@@ -84,11 +93,11 @@ function AppContent() {
           />
 
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/discover" replace />} />
+          <Route path="*" element={<Navigate to="/discover" replace />} />
         </Routes>
       </main>
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           duration: 4000,
