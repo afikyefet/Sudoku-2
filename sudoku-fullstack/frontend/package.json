@@ -13,6 +13,7 @@
   "dependencies": {
     "@heroui/react": "^2.8.2",
     "@heroui/theme": "^2.4.20",
+    "@tailwindcss/postcss": "^4.1.12",
     "axios": "^1.11.0",
     "framer-motion": "^12.23.12",
     "react": "^19.1.1",
