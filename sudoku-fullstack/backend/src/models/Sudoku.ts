@@ -1,7 +1,11 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import { ISudoku } from '../types';
 
-const sudokuSchema = new Schema<ISudoku>({
+interface SudokuModel extends Model<ISudoku> {
+  findTrending(limit?: number): Promise<any[]>;
+}
+
+const sudokuSchema = new Schema<ISudoku, SudokuModel>({
   user: {
     type: Schema.Types.ObjectId,
     required: [true, 'User ID is required'],
@@ -191,4 +195,4 @@ sudokuSchema.statics.findTrending = function (limit = 10) {
 // Include virtuals in JSON output
 sudokuSchema.set('toJSON', { virtuals: true });
 
-export const Sudoku = mongoose.model<ISudoku>('Sudoku', sudokuSchema);
+export const Sudoku = mongoose.model<ISudoku, SudokuModel>('Sudoku', sudokuSchema);

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { io, Socket } from 'socket.io-client';
-import { Notification } from '../types';
+import type { Notification } from '../types';
 import { useAuth } from './AuthContext';
 
 interface SocketContextType {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {
+import type {
   ApiResponse,
   AuthResponse,
   CommentInput,
@@ -9,7 +9,7 @@ import {
   SudokuInput,
   SudokuPuzzle,
   SudokuResponse
-} from '../types/index.js';
+} from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 

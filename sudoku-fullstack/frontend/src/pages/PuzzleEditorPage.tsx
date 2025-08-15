@@ -16,7 +16,7 @@ import {
 } from '@heroui/react';
 import { toast } from 'react-hot-toast';
 import { sudokuAPI } from '../services/api';
-import { SudokuPuzzle } from '../types';
+import type { SudokuPuzzle } from '../types';
 import {
   cloneGrid,
   isValidPlacement,

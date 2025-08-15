@@ -24,7 +24,7 @@ const userSchema = new Schema<IUser>({
     type: String,
     trim: true,
     maxlength: [50, 'Display name must be less than 50 characters'],
-    default: function () { return this.username; }
+    default: function (this: any) { return this.username; }
   },
   avatar: {
     type: String,

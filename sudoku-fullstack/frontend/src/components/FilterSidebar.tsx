@@ -11,7 +11,7 @@ import {
     SelectItem,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { PuzzleFilters } from '../types';
+import type { PuzzleFilters } from '../types';
 
 interface FilterSidebarProps {
     filters: PuzzleFilters;

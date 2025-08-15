@@ -39,7 +39,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import FilterSidebar from '../components/FilterSidebar';
 import { socialAPI, sudokuAPI } from '../services/api';
-import { PuzzleFilters, SudokuPuzzle } from '../types';
+import type { PuzzleFilters, SudokuPuzzle } from '../types';
 
 const DiscoveryPage = () => {
     const [puzzles, setPuzzles] = useState<SudokuPuzzle[]>([]);

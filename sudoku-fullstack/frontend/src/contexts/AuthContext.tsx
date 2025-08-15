@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { authAPI } from '../services/api';
-import { User, AuthContextType } from '../types';
+import type { User, AuthContextType } from '../types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -69,10 +69,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (email: string, password: string): Promise<void> => {
+  const register = async (email: string, username: string, password: string): Promise<void> => {
     try {
       setIsLoading(true);
-      const response = await authAPI.register(email, password);
+      const response = await authAPI.register(email, username, password);
       
       if (response.success && response.data) {
         const { user, token } = response.data;

@@ -186,15 +186,15 @@ export interface ApiResponse<T = any> {
   data?: T;
 }
 
-export interface PaginatedResponse<T> extends ApiResponse<T> {
-  data: {
-    items: T[];
-    pagination: {
-      currentPage: number;
-      totalPages: number;
-      totalItems: number;
-      hasNext: boolean;
-      hasPrev: boolean;
-    };
+export interface PaginatedPayload<T> {
+  items: T[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    hasNext: boolean;
+    hasPrev: boolean;
   };
 }
+
+export interface PaginatedResponse<T> extends ApiResponse<PaginatedPayload<T>> { }

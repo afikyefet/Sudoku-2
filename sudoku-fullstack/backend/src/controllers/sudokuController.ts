@@ -250,12 +250,12 @@ export const getPublicPuzzles = async (req: Request, res: Response): Promise<voi
         sort = { createdAt: -1 };
     }
 
-    let puzzles;
-    let total;
+    let puzzles: any[] = [];
+    let total = 0;
 
     if (sortBy === 'trending') {
       // Use the trending method from the model
-      const trendingPuzzles = await Sudoku.findTrending(limit);
+      const trendingPuzzles = await (Sudoku as any).findTrending(limit);
       puzzles = trendingPuzzles.slice(skip, skip + limit);
       total = trendingPuzzles.length;
     } else {

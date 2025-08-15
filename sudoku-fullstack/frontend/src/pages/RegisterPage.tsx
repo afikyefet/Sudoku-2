@@ -13,6 +13,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
@@ -27,6 +28,14 @@ const RegisterPage = () => {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Email is invalid';
+    }
+
+    if (!username) {
+      newErrors.username = 'Username is required';
+    } else if (username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
+    } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      newErrors.username = 'Username can only contain letters, numbers, and underscores';
     }
 
     if (!password) {
@@ -53,7 +62,7 @@ const RegisterPage = () => {
     }
 
     try {
-      await register(email, password);
+      await register(email, username, password);
       navigate('/dashboard');
     } catch (error) {
       // Error handling is done in the auth context
@@ -88,6 +97,19 @@ const RegisterPage = () => {
               autoComplete="email"
               isInvalid={!!errors.email}
               errorMessage={errors.email}
+            />
+
+            <Input
+              type="text"
+              label="Username"
+              placeholder="Choose a username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              isRequired
+              variant="bordered"
+              autoComplete="username"
+              isInvalid={!!errors.username}
+              errorMessage={errors.username}
             />
             
             <Input
@@ -130,7 +152,7 @@ const RegisterPage = () => {
               color="primary"
               size="lg"
               isLoading={isLoading}
-              disabled={!email || !password || !confirmPassword || isLoading}
+              disabled={!email || !username || !password || !confirmPassword || isLoading}
               className="w-full"
             >
               {isLoading ? 'Creating Account...' : 'Create Account'}

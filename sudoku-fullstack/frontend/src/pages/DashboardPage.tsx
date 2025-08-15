@@ -24,7 +24,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { sudokuAPI } from '../services/api';
-import { SudokuPuzzle, SudokuInput } from '../types';
+import type { SudokuPuzzle, SudokuInput } from '../types';
 import { generateSamplePuzzle } from '../utils/sudokuValidator';
 
 const DashboardPage = () => {

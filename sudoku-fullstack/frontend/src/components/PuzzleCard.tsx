@@ -21,7 +21,7 @@ import {
     User as UserComponent,
 } from '@heroui/react';
 import { useNavigate } from 'react-router-dom';
-import { SudokuPuzzle } from '../types';
+import type { SudokuPuzzle } from '../types';
 
 interface PuzzleCardProps {
     puzzle: SudokuPuzzle;
