@@ -9,7 +9,8 @@ import {
   Typography,
   Space,
   theme,
-  Badge
+  Badge,
+  MenuProps
 } from 'antd';
 import {
   DashboardOutlined,
@@ -18,7 +19,6 @@ import {
   UserOutlined,
   LogoutOutlined,
   MenuOutlined,
-  PuzzleOutlined,
   StarOutlined,
   SettingOutlined,
   TrophyOutlined
@@ -37,7 +37,7 @@ const Layout: React.FC = () => {
   const location = useLocation();
   const { token } = theme.useToken();
 
-  const menuItems = [
+  const menuItems: MenuProps['items'] = [
     {
       key: '/dashboard',
       icon: <DashboardOutlined />,
@@ -54,7 +54,7 @@ const Layout: React.FC = () => {
       label: 'Create Puzzle',
     },
     {
-      type: 'divider',
+      type: 'divider' as const,
     },
     {
       key: 'favorites',
@@ -88,7 +88,7 @@ const Layout: React.FC = () => {
     },
   ];
 
-  const userMenuItems = [
+  const userMenuItems: MenuProps['items'] = [
     {
       key: 'profile',
       icon: <UserOutlined />,
@@ -102,7 +102,7 @@ const Layout: React.FC = () => {
       onClick: () => navigate('/settings'),
     },
     {
-      type: 'divider',
+      type: 'divider' as const,
     },
     {
       key: 'logout',
@@ -146,13 +146,13 @@ const Layout: React.FC = () => {
         >
           {!collapsed ? (
             <Space>
-              <PuzzleOutlined style={{ fontSize: 24, color: token.colorPrimary }} />
+              <TrophyOutlined style={{ fontSize: 24, color: token.colorPrimary }} />
               <Title level={4} style={{ margin: 0, color: token.colorTextHeading }}>
                 SudokuMaster
               </Title>
             </Space>
           ) : (
-            <PuzzleOutlined style={{ fontSize: 24, color: token.colorPrimary }} />
+            <TrophyOutlined style={{ fontSize: 24, color: token.colorPrimary }} />
           )}
         </div>
 
@@ -180,12 +180,8 @@ const Layout: React.FC = () => {
             type="text"
             icon={<MenuOutlined />}
             onClick={() => setCollapsed(!collapsed)}
-            style={{
-              display: 'none',
-              '@media (max-width: 768px)': {
-                display: 'block',
-              },
-            }}
+            className="mobile-menu-button"
+            style={{ display: 'none' }}
           />
 
           <div style={{ flex: 1 }} />

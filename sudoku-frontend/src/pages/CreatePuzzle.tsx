@@ -23,7 +23,7 @@ import {
 import {
   PlusOutlined,
   EditOutlined,
-  RandomOutlined,
+  ThunderboltOutlined,
   CheckOutlined,
   ArrowLeftOutlined,
   SaveOutlined,
@@ -253,7 +253,7 @@ const CreatePuzzle: React.FC = () => {
             bodyStyle={{ padding: 32, textAlign: 'center' }}
             onClick={() => setCreateMethod('random')}
           >
-            <RandomOutlined style={{ fontSize: 48, color: token.colorPrimary, marginBottom: 16 }} />
+            <ThunderboltOutlined style={{ fontSize: 48, color: token.colorPrimary, marginBottom: 16 }} />
             <Title level={3}>Random Generation</Title>
             <Text type="secondary">
               Let our algorithm create a valid puzzle for you. Choose difficulty and get a guaranteed solvable puzzle.
@@ -335,7 +335,7 @@ const CreatePuzzle: React.FC = () => {
               size="large"
               loading={loading}
               onClick={() => generateRandomPuzzle(puzzleData.difficulty)}
-              icon={<RandomOutlined />}
+              icon={<ThunderboltOutlined />}
               style={{ minWidth: 160 }}
             >
               {loading ? 'Generating...' : 'Generate Puzzle'}

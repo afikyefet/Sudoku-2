@@ -362,7 +362,6 @@ const Browse: React.FC = () => {
                       {puzzle.tags.slice(0, 2).map((tag) => (
                         <Tag
                           key={tag}
-                          size="small"
                           style={{
                             margin: '0 4px 4px 0',
                             borderRadius: 6,
@@ -373,7 +372,7 @@ const Browse: React.FC = () => {
                         </Tag>
                       ))}
                       {puzzle.tags.length > 2 && (
-                        <Tag size="small" style={{ margin: '0 4px 4px 0', borderRadius: 6, fontSize: 10 }}>
+                        <Tag style={{ margin: '0 4px 4px 0', borderRadius: 6, fontSize: 10 }}>
                           +{puzzle.tags.length - 2}
                         </Tag>
                       )}

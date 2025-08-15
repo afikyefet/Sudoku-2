@@ -60,27 +60,27 @@ const PuzzleEditor: React.FC = () => {
       // Try to fetch from API first
       try {
         const response = await sudokuAPI.getPuzzle(puzzleId);
-        if (response.data.success) {
-          const puzzleData = response.data.data.puzzle;
+        if (response.puzzle) {
+          const puzzleData = response.puzzle;
           setPuzzle({
             id: puzzleData.id,
             title: puzzleData.title,
-            description: puzzleData.description,
-            difficulty: puzzleData.difficulty || 'medium',
+            description: (puzzleData as any).description || 'A challenging Sudoku puzzle',
+            difficulty: (puzzleData as any).difficulty || 'medium',
             puzzleData: puzzleData.puzzleData,
-            solutionData: puzzleData.solutionData,
+            solutionData: (puzzleData as any).solutionData,
             creator: {
-              id: puzzleData.user || 'unknown',
+              id: (puzzleData as any).user || 'unknown',
               name: 'Anonymous Player',
               avatar: undefined
             },
-            rating: puzzleData.rating || 0,
-            ratingCount: puzzleData.ratingCount || 0,
-            solvedCount: puzzleData.solvedCount || 0,
-            estimatedTime: puzzleData.estimatedTime || 15,
-            tags: puzzleData.tags || [],
+            rating: (puzzleData as any).rating || 0,
+            ratingCount: (puzzleData as any).ratingCount || 0,
+            solvedCount: (puzzleData as any).solvedCount || 0,
+            estimatedTime: (puzzleData as any).estimatedTime || 15,
+            tags: (puzzleData as any).tags || [],
             isFavorited: false,
-            createdAt: puzzleData.createdAt
+            createdAt: (puzzleData as any).createdAt || new Date().toISOString()
           });
           setIsFavorited(false);
           return;
@@ -374,13 +374,16 @@ const PuzzleEditor: React.FC = () => {
             <div style={{ marginTop: 4 }}>
               <Text style={{ 
                 textTransform: 'capitalize',
-                color: {
-                  easy: '#52c41a',
-                  medium: '#faad14',
-                  hard: '#fa8c16',
-                  expert: '#f5222d',
-                  master: '#722ed1'
-                }[puzzle.difficulty as keyof typeof {}] || '#666'
+                color: (() => {
+                  const colors: { [key: string]: string } = {
+                    easy: '#52c41a',
+                    medium: '#faad14',
+                    hard: '#fa8c16',
+                    expert: '#f5222d',
+                    master: '#722ed1'
+                  };
+                  return colors[puzzle.difficulty] || '#666';
+                })()
               }}>
                 {puzzle.difficulty}
               </Text>

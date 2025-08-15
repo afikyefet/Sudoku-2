@@ -14,7 +14,7 @@ import {
 import {
   UserOutlined,
   LockOutlined,
-  PuzzleOutlined,
+
   LoginOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone
@@ -36,7 +36,7 @@ const Login: React.FC = () => {
     setError('');
 
     try {
-      await login(values.email, values.password);
+      await login({ email: values.email, password: values.password });
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
@@ -81,7 +81,7 @@ const Login: React.FC = () => {
                 margin: '0 auto',
               }}
             >
-              <PuzzleOutlined style={{ fontSize: 32, color: 'white' }} />
+              <UserOutlined style={{ fontSize: 32, color: 'white' }} />
             </div>
             <div>
               <Title level={2} style={{ margin: 0, color: token.colorTextHeading }}>

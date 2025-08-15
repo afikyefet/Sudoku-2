@@ -97,9 +97,9 @@ const Dashboard: React.FC = () => {
       
       // Try to load from API
       try {
-        const response = await sudokuAPI.getUserPuzzles();
-        if (response.data.success) {
-          const apiPuzzles = response.data.data.puzzles.map(transformPuzzle);
+        const response = await sudokuAPI.getPuzzles();
+        if (response.puzzles) {
+          const apiPuzzles = response.puzzles.map(transformPuzzle);
           setPuzzles(apiPuzzles);
           generateStats(apiPuzzles);
           return;
@@ -554,14 +554,14 @@ const Dashboard: React.FC = () => {
             </div>
 
             {filteredPuzzles.length === 0 ? (
-              <Empty
-                description="No puzzles found"
-                action={
+              <div>
+                <Empty description="No puzzles found" />
+                <div style={{ textAlign: 'center', marginTop: 16 }}>
                   <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/create')}>
                     Create Your First Puzzle
                   </Button>
-                }
-              />
+                </div>
+              </div>
             ) : (
               <Table
                 dataSource={filteredPuzzles}

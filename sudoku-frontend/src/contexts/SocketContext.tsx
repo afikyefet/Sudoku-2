@@ -155,7 +155,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
                   challengeId: challenge.id, 
                   accepted: true 
                 });
-                notification.close(challenge.id);
+                notification.destroy(challenge.id);
               }}
               style={{ marginRight: 8 }}
             >
@@ -167,7 +167,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
                   challengeId: challenge.id, 
                   accepted: false 
                 });
-                notification.close(challenge.id);
+                notification.destroy(challenge.id);
               }}
             >
               Decline
