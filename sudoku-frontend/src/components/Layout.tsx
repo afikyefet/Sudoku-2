@@ -24,6 +24,7 @@ import {
   TrophyOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
+import { useSocket } from '../contexts/SocketContext';
 
 const { Header, Content, Sider } = AntLayout;
 const { Title, Text } = Typography;
@@ -31,6 +32,7 @@ const { Title, Text } = Typography;
 const Layout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { user, logout } = useAuth();
+  const { isConnected, onlineUsers } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   const { token } = theme.useToken();
@@ -189,6 +191,18 @@ const Layout: React.FC = () => {
           <div style={{ flex: 1 }} />
 
           <Space size="middle">
+            {/* Connection status and online users */}
+            <Space>
+              <Badge 
+                color={isConnected ? '#52c41a' : '#ff4d4f'} 
+                text={
+                  <Text style={{ fontSize: 12, color: token.colorTextSecondary }}>
+                    {isConnected ? `${onlineUsers} online` : 'Offline'}
+                  </Text>
+                }
+              />
+            </Space>
+
             {/* Quick actions */}
             <Button
               type="primary"

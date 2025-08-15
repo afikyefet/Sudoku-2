@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, theme, App as AntApp } from 'antd';
 import { AuthProvider } from './contexts/AuthContext';
+import { SocketProvider } from './contexts/SocketContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Login from './pages/Login';
@@ -45,32 +46,34 @@ function App() {
     <ConfigProvider theme={customTheme}>
       <AntApp>
         <AuthProvider>
-          <Router>
-            <div className="App">
-              <Routes>
-                {/* Public routes */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                
-                {/* Protected routes with layout */}
-                <Route path="/" element={
-                  <ProtectedRoute>
-                    <Layout />
-                  </ProtectedRoute>
-                }>
-                  <Route index element={<Navigate to="/dashboard" replace />} />
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="browse" element={<Browse />} />
-                  <Route path="create" element={<CreatePuzzle />} />
-                  <Route path="puzzle/:id" element={<PuzzleEditor />} />
-                  <Route path="profile/:userId?" element={<Profile />} />
-                </Route>
-                
-                {/* Catch all route */}
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </div>
-          </Router>
+          <SocketProvider>
+            <Router>
+              <div className="App">
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  
+                  {/* Protected routes with layout */}
+                  <Route path="/" element={
+                    <ProtectedRoute>
+                      <Layout />
+                    </ProtectedRoute>
+                  }>
+                    <Route index element={<Navigate to="/dashboard" replace />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="browse" element={<Browse />} />
+                    <Route path="create" element={<CreatePuzzle />} />
+                    <Route path="puzzle/:id" element={<PuzzleEditor />} />
+                    <Route path="profile/:userId?" element={<Profile />} />
+                  </Route>
+                  
+                  {/* Catch all route */}
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                </Routes>
+              </div>
+            </Router>
+          </SocketProvider>
         </AuthProvider>
       </AntApp>
     </ConfigProvider>
